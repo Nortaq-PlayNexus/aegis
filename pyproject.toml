@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aegis"
+version = "1.0.0"
+description = "Automated Exposure - Gap - Intelligence Suite: defensive security operations platform"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "requests>=2.31",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+full = [
+    "dnspython>=2.4",
+    "networkx>=3.0",
+    "jinja2>=3.1",
+    "ldap3>=2.9",
+    "pydantic>=2.0",
+    "tqdm>=4.66",
+    "psutil>=5.9",
+]
+dev = ["pytest>=7.4", "ruff>=0.4", "mypy>=1.8"]
+
+[project.scripts]
+aegis = "aegis.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["aegis*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "SIM"]
+ignore = [
+    "E501",  # line length is handled by the formatter
+    "B008",
+    "SIM108", # ternary is not always clearer than if/else
+    "B904",
+    # Style-only. The remaining findings are deliberate:
+    "SIM105", # try/except/pass is more explicit than contextlib.suppress here
+    "E741",   # `l` is a short local in comprehensions; renaming hurts readability
+    "SIM102", # nested ifs are used where the combined form would be long
+    "SIM113", # enumerate is not always clearer
+    "SIM117",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"
+# The suite must be runnable with no arguments and report every outcome.
+# `-p no:cacheprovider` keeps the repo clean; aegis state is redirected per-test
+# by the isolated_home fixture in tests/conftest.py.
+filterwarnings = ["error::DeprecationWarning:aegis.*"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+# AEGIS resolves providers dynamically and the capability catalog is a data table,
+# so untyped call sites in suite handlers are expected rather than a defect.
+check_untyped_defs = true
+warn_unused_ignores = false
+files = ["aegis"]

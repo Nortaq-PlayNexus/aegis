@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+*.pyd
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Tool caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# PyInstaller build output
+build/
+build-od/
+dist/
+dist-od/
+*.manifest
+
+# Local config / secrets
+.env
+.env.*
+!.env.example
+config/secrets.json
+
+# OS noise
+Thumbs.db
+Desktop.ini
+.DS_Store
